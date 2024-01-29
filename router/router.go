@@ -8,6 +8,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"iTypeService/global"
+	"iTypeService/middleware"
 	"net/http"
 	"os/signal"
 	"syscall"
@@ -36,6 +37,8 @@ func InitRouter() {
 
 	//初始化gin框架，并注册相关路由
 	r := gin.Default()
+	//中间件
+	r.Use(middleware.Cors())
 	rgPublic := r.Group("/api/v1/public")
 	rgAuth := r.Group("/api/v1")
 
@@ -60,10 +63,14 @@ func InitRouter() {
 		Handler: r,
 	}
 
-	err := r.Run(fmt.Sprintf(":%s", stPort))
-	if err != nil {
-		panic(fmt.Sprintf("run server err: %s", err.Error()))
-	}
+	go func() {
+		global.Logger.Info(fmt.Sprintf("start listen: %s", stPort))
+
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			global.Logger.Error("start server error: %s", err.Error())
+			return
+		}
+	}()
 
 	<-ctx.Done()
 
@@ -79,6 +86,5 @@ func InitRouter() {
 
 // 基础平台下的路由
 func InitBasePlatformRoutes() {
-	InitFileRoutes()
 	InitUserRoutes()
 }

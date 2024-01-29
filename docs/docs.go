@@ -15,45 +15,35 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/download/:id": {
-            "get": {
-                "description": "do ping",
-                "consumes": [
-                    "application/json"
+        "/api/v1/public/user/login": {
+            "post": {
+                "description": "用户登录详细描述",
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "密码",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    }
                 ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "example"
-                ],
-                "summary": "ping example",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "登录成功",
                         "schema": {
                             "type": "string"
                         }
-                    }
-                }
-            }
-        },
-        "/upload": {
-            "post": {
-                "description": "do ping",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "example"
-                ],
-                "summary": "ping example",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                    },
+                    "401": {
+                        "description": "登录失败",
                         "schema": {
                             "type": "string"
                         }
